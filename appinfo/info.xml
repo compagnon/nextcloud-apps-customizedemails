@@ -36,13 +36,9 @@ by setup, it would be possible to
     <category>social</category>
     <bugs>https://github.com/compagnon/nextcloud-custom_apps/issues</bugs>
     <dependencies>
-        <nextcloud min-version="16" max-version="17"/>
+        <nextcloud min-version="16"/>
     </dependencies>
     <navigations>
-        <navigation>
-            <name>Customized Emails</name>
-            <route>customizedemails.page.index</route>
-        </navigation>
     </navigations>
     <repair-steps>
 		<install>
@@ -52,5 +48,4 @@ by setup, it would be possible to
 			<step>OCA\CustomizedEmails\Migration\UnsetCustomizedEmails</step>
 		</uninstall>
 	</repair-steps>
-
 </info>

@@ -105,7 +105,7 @@ class CustomizedEmails extends EMailTemplate {
  	*/
 	 protected static function getHTMLFile($dir,$emailId) {
 		$content = null;
-		if ( is_null(self::$HTMLEMAILS[$emailId]) ) {
+		if ( !array_key_exists($emailId,self::$HTMLEMAILS) || is_null(self::$HTMLEMAILS[$emailId]) ) {
 			if (is_dir($dir) && is_readable($dir . $emailId . '.html')) {
 						$content = file_get_contents($dir . $emailId . '.html', false);
 						if( $content != null ) {
@@ -376,12 +376,17 @@ class CustomizedEmails extends EMailTemplate {
 			return( $this->delegate->renderHtml());
 		}
 
-		$url = $this->urlGenerator->getAbsoluteURL("/newpassword" . (null !== $this->data['emailAddress'] ? '/' . $this->data['emailAddress'] : '') );
-		$urlLogin = $this->urlGenerator->getAbsoluteURL("/login" . (null !== $this->data['emailAddress'] ? '?user=' . $this->data['emailAddress'] : '') );
+		$emailAddress = null;
+		if(array_key_exists('emailAddress',$this->data)) {
+			$emailAddress = $this->data['emailAddress'];
+		}
+
+		$url = $this->urlGenerator->getAbsoluteURL("/newpassword" . (null !== $emailAddress ? '/' . $emailAddress : '') );
+		$urlLogin = $this->urlGenerator->getAbsoluteURL("/login" . (null !== $emailAddress ? '?user=' . $emailAddress : '') );
 
 		// pour faciliter l integration SAGIS
 		switch($this->emailId) {
-			case "settings.Welcome":				
+			case "settings.Welcome":
 				$this->emailContent = str_replace('%link%', $url, $this->emailContent);
 			break;
 			case "core.NewPassword":
@@ -391,7 +396,7 @@ class CustomizedEmails extends EMailTemplate {
 			case "settings.PasswordChanged":
 				$this->emailContent = str_replace('%link%', $urlLogin, $this->emailContent);
 				$this->emailContent = str_replace('%linkReset%', $url, $this->emailContent);
-			case "settings.EmailChanged":				
+			case "settings.EmailChanged":
 				$urlLogin = $this->urlGenerator->getAbsoluteURL("/login" . (null !== $this->data['newEMailAddress'] ? '?user=' . $this->data['newEMailAddress'] : '') );
 				$this->emailContent = str_replace('%link%', $urlLogin, $this->emailContent);
 			break;
